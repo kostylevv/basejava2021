@@ -36,12 +36,9 @@ public class ArrayStorage {
 
     public void delete(String uuid) {
         int index = getResumeIndex(uuid);
-        if (index > -1) {
-            for (int i = index; i < size; i++) {
-                storage[i] = storage[i + 1];
-            }
-            size--;
-        }
+        storage[index] = storage[size-1];
+        storage[size-1] = null;
+        size--;
     }
 
     /**
