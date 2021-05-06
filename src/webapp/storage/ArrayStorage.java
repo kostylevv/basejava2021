@@ -14,7 +14,6 @@ public class ArrayStorage {
     public int getSize() {
         return size;
     }
-
     private int size = 0;
 
     public void clear() {
