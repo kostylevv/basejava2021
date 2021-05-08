@@ -10,38 +10,39 @@ import java.util.Arrays;
 public class ArrayStorage {
     private static final int CAPACITY = 10_000;
     Resume[] storage = new Resume[CAPACITY];
+    private int size = 0;
 
     public int getSize() {
         return size;
     }
-    private int size = 0;
 
     public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
-    public void save(Resume r) {
-        if (r == null || r.getUuid() == null) {
+    public void save(Resume resume) {
+        if (resume == null || resume.getUuid() == null) {
             System.out.println("Can't save null");
             return;
         }
-        if (size + 1 == CAPACITY) {
+        if (size + 1 >= CAPACITY) {
             System.out.println("Storage is full");
             return;
         }
-        if (!hasResume(r.getUuid())) {
-            storage[size] = r;
+        if (getResumeIndex(resume) == -1) {
+            storage[size] = resume;
             size++;
-            System.out.println("Stored resume with UUID " + r.getUuid());
+            System.out.println("Stored resume with UUID " + resume.getUuid());
         } else {
-            System.out.println("Storage already have resume with UUID " + r.getUuid());
+            System.out.println("Storage already have resume with UUID " + resume.getUuid());
         }
     }
 
     public Resume get(String uuid) {
         int index = getResumeIndex(uuid);
         if (index != -1) return storage[index];
+        System.out.println("Storage doesn't have Resume with UUID " + uuid);
         return null;
     }
 
@@ -50,7 +51,7 @@ public class ArrayStorage {
             System.out.println("Can't delete null");
             return;
         }
-        if (hasResume(uuid)) {
+        if (getResumeIndex(uuid) > -1) {
             int index = getResumeIndex(uuid);
             storage[index] = storage[size - 1];
             storage[size - 1] = null;
@@ -60,22 +61,11 @@ public class ArrayStorage {
         }
     }
 
-    public boolean hasResume(Resume resume) {
-        if (resume != null && resume.getUuid() != null && getResumeIndex(resume.getUuid()) > -1) return true;
-        return false;
-    }
-
-    public boolean hasResume(String uuid) {
-        Resume resume = new Resume();
-        resume.setUuid(uuid);
-        return hasResume(resume);
-    }
-
     public void update(Resume updated) {
         if (updated == null || updated.getUuid() == null) {
             System.out.println("Can't update with null");
         }
-        if (hasResume(updated)) {
+        if (getResumeIndex(updated) > -1) {
             storage[getResumeIndex(updated.getUuid())] = updated;
         } else {
             System.out.println("Doesn't have resume with UUID " + updated.getUuid());
@@ -93,5 +83,9 @@ public class ArrayStorage {
             }
         }
         return -1;
+    }
+
+    private int getResumeIndex(Resume resume) {
+        return getResumeIndex(resume.getUuid());
     }
 }
